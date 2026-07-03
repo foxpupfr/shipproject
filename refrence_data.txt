@@ -1,0 +1,99 @@
+#### CORE ####
+
+- so what i need to do tommowrow is remove th ticket based fucntyion from the ticket booking of the ship and instead add the seat based fuction also making it show that the seats are full and to go to prebooking place  $done$
+- the above should be using the update fuction provided by mysql $done$
+- i also need to implement staff fuctionalities and basic functionalities for adding staffs and admins which i can copy core logic from registreation and implemnt a little adminya nd ownery things  $done$
+- after adding staff i got to let them deactivate tickets and change states of tickets and allocation $done$
+- then i need to make so that passengers can see the allocation of seats before and after then $done but with tickets$
+- then i need to at last make food menu $done$
+
+- i also need to let staff view and see tables and other info regarding their work $done$
+
+
+#### FUN AND POLISHING ###
+
+- i need to add timestampsfor most of registering and ticket booking 
+- i need to add table looks without modules and with maths to my thing $done$
+- i need to polish code like reallt make it more readable using comments and all 
+
+
+[ START ]
+           │
+           ▼
+   ┌───────────────────────────┐
+   │ Check DB Connection Loop  │◄──────────────────────────────┐
+   └─────────────┬─────────────┘                               │
+                 │ (True)                                      │
+                 ▼                                             │
+   ┌───────────────────────────┐                               │
+   │      MAIN MENU SELECTION  │                               │
+   │  1. Login  2. Reg  3. Exit │                              │
+   └──────┬───────────┬────────┘                               │
+          │(1)        │(2)        (3)                          │
+          ▼           ▼          ┌───────────┐                 │
+    ┌───────────┐ ┌───────────┐  │ [ EXIT ]  │                 │
+    │ Login Type│ │ Register  │  │  Program  │                 │
+    │ 1, 2, or 3│ │ Options   │  └───────────┘                 │
+    └─────┬─────┘ └─────┬─────┘                                │
+          │             │                                      │
+          ▼             └─────► [Process User Registration] ───┤
+  ┌───────┴──────────────────────────┐                         │
+  │ Login Authentication Check       │                         │
+  └───────┬──────────────┬───────────┘                         │
+          │              │                                     │
+          ▼ (User Logged In)  ▼ (Staff/Admin/Owner Logged In)  │
+   ┌──────────────┐      ┌──────────────┐                      │
+   │  USER MENU   │      │  STAFF MENU  │                      │
+   │ 1. Book Tkts │      │ 1. Deact Tkt │                      │
+   │ 2. Allocate  │      │ 2. Refund    │                      │
+   │ 3. Prebook   │      │ 3-6. Info    │                      │
+   │ 4. Food Book │      │ 7. Admin Menu│                      │
+   │ 5. Main Menu │      │ 8. Exit Staff│                      │
+   └──────┬───────┘      └──────┬───────┘                      │
+          │                     │                              │
+          │(5)                  │(7 - Privilege Check)         │
+          ▼                     ▼                              │
+    (Route Back)         Is User Admin (3) or Owner (4)?       │
+          │                     │              │               │
+          │                     ▼ (Yes, 4)     ▼ (Yes, 3)      │
+          │              ┌──────────────┐┌──────────────┐      │
+          │              │  OWNER MENU  ││  ADMIN MENU  │      │
+          │              │ 1. Add Staff ││ 1. Add Staff │      │
+          │              │ 2. Rem Staff ││ 2. Rem Staff │      │
+          │              │ 3. Add Admin ││ 3. DB Console│      │
+          │              │ 4. Rem Admin ││ 4. Exit Menu │      │
+          │              │ 5. DB Console│└──────┬───────┘      │
+          │              │ 6. Exit Menu │       │              │
+          │              └──────┬───────┘       │              │
+          │                     │(6)            │(4)           │
+          │                     └───────┬───────┴─────────────►│ (Route Back)
+          │                             ▼                      │
+          └─────────────────────────────┴──────────────────────┘
+
+
+    print("\n\t\t\b\b1.Rotti and Beef Chops")
+    print("\t\t\b\b2.Dosa and Curries")
+    print("\t\t\b\b3.Lemon Rice")
+    print("\t\t\b\b4.Biriyani")
+    print("\t\t\b\b5.Idli and Curries")
+    print("\t\t\b\b6.Meals")
+    print("\t\t\b\b7.Fish fry")
+    print("\t\t\b\b8.Omelette")
+    print("\t\t\b\b9.Al-faham")
+    print("\t\t\b\b10.Vada pav")
+    print("\t\t\b\b11.Fried rice")
+    print("\t\t\b\b12.Chole batture")
+    print("\t\t\b\b13.Samosa and chuttney")
+    print("\t\t\b\b14.Aloo paratha")
+    print("\t\t\b\b15.Butter garlic naan and palak paneer")
+    print("\t\t\b\b16.Popcorn")
+    print("\t\t\b\b17.Burger")
+    print("\t\t\b\b18.Chicken noodles")
+    print("\t\t\b\b19.Mushroom soup")
+    print("\t\t\b\b20.Pizza")
+    print("\t\t\b\b21.Mango lassi")
+    print("\t\t\b\b22.Soda items (can be selected from food stall)")
+    print("\t\t\b\b23.Tea/Coffe (can be selectd from food stall)")
+    print("\t\t\b\b24.Fresh Lime")
+    print("\t\t\b\b25.Water")
+
