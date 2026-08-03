@@ -1,16 +1,23 @@
+# Please read the commends carefully to understand the program 
+
 #imports 
-try:
+try: # Tries to import all the modules needed 
     import mysql.connector as s #will be used for everything around
     from datetime import datetime #will be mainly used for logging
     import time #will be used to program menu driven interface timings and all
-    module_error_flag=False
+    module_error_flag=False  # if no error occurs this flag will be set to false
 except Exception as err:
-    module_error=str(err)
-    module_error_flag=True
+    module_error=str(err)  # if error occurs the error will be converted into string
+    module_error_flag=True  # Then the flag will be set to true 
+                            # all of this is done to ensure every error is logged and thus helps in maintaince
+#imports over
+
+
 
 # function blocks for easy management
 
 # function block for first run of program (fully hardcoded block)
+ #most values here are hardcoded as to show examples and as such 
 def first_run():
     log("#### program shipproject.py was started ####",escape_sequences="\n\n\n\n\n")
     def run_querie(*command):   #for error checking and handling also logs into the log.txt if the table exits 
@@ -23,7 +30,7 @@ def first_run():
             log("Table "+command[1]+" already exits moving on...")
             return False
 
-    #con0 was oppened to intiated to check for existence of database and create it if required
+    #con0 was oppened to intiated the check for existence of database and create it if required
     con0 = s.connect(host="localhost", user="theblackfox", password="theblackfox90")
     cur0 = con0.cursor()
     if con0.is_connected() == True:
@@ -31,19 +38,19 @@ def first_run():
     try:
         cur0.execute("create database shipproject")
         print("\n\nDatabase shipproject and connected tables were not found creating them please wait...")
-        database_flag=0
+        database_flag=0    
         log("Database shipproject was not found so it was created using connection0")
-        time.sleep(1.5)
-    except s.errors.DatabaseError:
+        time.sleep(1.5)  # some timing for looks 
+    except s.errors.DatabaseError: # this means database was already present so it moved on 
         database_flag=1
-        log("Database shipproject already exits moving on...")
+        log("Database shipproject already exits moving on...") 
     con0.close()        #con0 was closed here 
     log("connection 0 was closed")
     global con1      #con1 is being opened here for all other interactions in this program with mysql
     con1 = s.connect(host="localhost",user="theblackfox",password="theblackfox90",database="shipproject",)
-    if con1.is_connected() == True:
+    if con1.is_connected() == True:  
         log("connection 1 was connected")
-    global cur1
+    global cur1   # cur1 is being made into global scope for future use 
     cur1 = con1.cursor()
 
 #login and register tables and pre-inserts some values
@@ -54,11 +61,22 @@ def first_run():
     #creates staff_register_table
     if run_querie("create table staff_register_list(staff_id int primary key,email_address varchar(100) not null unique,password varchar(225) not null, first_name varchar(50) not null,last_name varchar(50) not null,age int not null,phonenumber bigint unique not null,adhar_id bigint unique not null,nationality varchar(50) not null,tc char(1) not null ,is_admin char(1),is_owner char(1))","staff_register_list"):
         #adds admin to staff tables so admin can add the other staffs 
-        cur1.execute("insert into staff_register_list(staff_id,email_address,password,first_name,last_name,age,phonenumber,adhar_id,nationality,tc,is_admin,is_owner)values(1,'ownerforshipproject@gmail.com','owner','admin for','shipproject',18,9090190901,0010,'India','y','y','y')")
+        cur1.execute("insert into staff_register_list(staff_id,email_address,password,first_name,last_name,age,phonenumber,adhar_id,nationality,tc,is_admin,is_owner)values(1,'ownerforshipproject@gmail.com','owner','owner for','shipproject',18,9090190901,0010,'India','y','y','y')")
         cur1.execute("insert into staff_register_list(staff_id,email_address,password,first_name,last_name,age,phonenumber,adhar_id,nationality,tc,is_admin)values(2,'adminforshipproject@gmail.com','admin','admin for','shipproject',18,9090190991,00100,'India','y','y')")
-        cur1.execute("insert into staff_register_list(staff_id,email_address,password,first_name,last_name,age,phonenumber,adhar_id,nationality,tc)values(3,'staffforshipproject@gmail.com','staff','admin for','shipproject',18,9090190999,001000,'India','y')")
+        cur1.execute("insert into staff_register_list(staff_id,email_address,password,first_name,last_name,age,phonenumber,adhar_id,nationality,tc)values(3,'staffforshipproject@gmail.com','staff','staff for','shipproject',18,9090190999,001000,'India','y')")
         con1.commit()
         log("all basic staff entries were added to staff register list")
+
+        # The below values are commended just for the pupose of examples and showcase this is not a security letdown
+        # Also the below values are generic examples in cases of staffs and admins 
+        # Admins and staff can be removed or added but owner will be hardcoded 
+
+        # owner's staff id : 1 
+        # owner's password : owner
+        # admin's staff id : 2
+        # admin's password : admin
+        # staff's staff id : 3
+        # staff's password : staff
 
     #creates login checklist table
     run_querie("create table login_checklist(user_id int primary key,email_adress varchar(100) not null unique,phonenumber bigint not null,password varchar(225) not null)","login_checklist")
@@ -84,7 +102,8 @@ def first_run():
     #creates table for ships and pre-inserts some values
 
     tables_to_create_list=["mv_kavaratti","pre_mv_kavaratti","mv_arabian_sea","pre_mv_arabian_sea","mv_lakshadweep_sea","pre_mv_lakshadweep_sea","mv_amindivi","pre_mv_amindivi","hsc_parali","pre_hsc_parali"]
-        
+    # the list has names of ship through which it will itrate to form the ship tables
+
     for table_name_index in range(0,len(tables_to_create_list)):
         table_to_create=tables_to_create_list[table_name_index]
         if run_querie("create table "+table_to_create+"(ship_name varchar(50), user_id int, seat_no int, allocation varchar(50), ticket_id int,ticket_validity varchar(50),food varchar(50))",table_to_create):
@@ -93,33 +112,37 @@ def first_run():
                 cur1.execute("insert into "+table_to_create+"(ship_name,seat_no,allocation,ticket_validity,food)values('"+table_to_create+"','"+seat_no_str+"','disallocated','Not booked','not booked')")
                 con1.commit()
             log("all basic values were inserted into "+table_to_create)
+
     if database_flag==0: #this is database flag from con0 side which shows the confirmation (check con0 for reference)
         print("\nDone !")
-        time.sleep(1)
+        time.sleep(1) # some timing for looks 
         print("\n"*100) #prints 100 newlines in intention to clear terminal
 #block end
 
-# fuction block for user regiasteration1
+
+# fuction block for user regiasteration (part 1)
 def user_registeration1():
-    email_address = input("\n\t\t\b\bPlease enter you email : ")
-    print("\n\t\t\b\b### please remember your password ###\n".upper())
+    email_address = input("\n\t\t\b\bPlease enter you email : ") # Takes in all the basic user values for registeration
+    print("\n\t\t\b\b### please remember your password ###\n".upper()) 
     password0 = input("\t\t\b\bPlease enter a secure password : ")
     password1 = input("\t\t\b\bPlease reconfirm your password : ")
     flag = 0
-    if password0 != password1:
-        flag = 1
+    if password0 != password1: # Checks if both entered passwords are not same, condition is True it makes the flag = 1 
+        flag = 1               # flag = 1 here indicates passwords didn't match
         print("\n\n\t\tBoth passwords are not the same !!!\n")
         log("user didn't type matching passwords")
-        print("\t\tredirecting youQ to menu again !")
-    else:
-        flag = 0
-    return flag,password0,email_address
+        print("\t\tredirecting you to menu again !")
+    else:                      # If the passwords were same, above condition was deemed False it makes flag = 0
+        flag = 0               # flag = 0 here means passwords did match
+    return flag,password0,email_address   
+# Here it returns the above entered info and also the flag to the place function was called from 
 # block end
 
-# fuction block for user registeration2
-def user_registeration2(x,y):
-    password0=x
-    email_address=y
+
+# fuction block for user registeration (part 2)
+# This block is only entred if the passwords in first block matched 
+# That is because it depends on the flag varible in user_registeration2() refer to the fucntion for more info
+def user_registeration2(password,email_address):
     user_id = 0
     cur1.execute("select max(user_id) from register_list")
     c = cur1.fetchall()
@@ -134,9 +157,13 @@ def user_registeration2(x,y):
     adhar_id = input("\t\t\b\bPlease enter your adhar id : ")
     nationality = input("\t\t\b\bPlease enter your nationality : ")
     tc = input("\t\t\b\bDo you comply with T&C (y or n) : ")
+
+    values_1 = (user_id,email_address,password,first_name,last_name,age,phonenumber,adhar_id,nationality,tc)
+    values_2 = (user_id,email_address,phonenumber,password)
+
     try:
-        cur1.execute("insert into register_list(user_id,email_address,password,first_name,last_name,age,phonenumber,adhar_id,nationality,tc)values(""'"+ user_id+ "','"+ email_address+ "','"+ password0+ "','"+ first_name+ "','"+ last_name+ "','"+ age+ "','"+ phonenumber+ "','"+ adhar_id+ "','"+ nationality+ "','"+ tc+ "')")
-        cur1.execute("insert into login_checklist(user_id,email_adress,phonenumber,password)values(""'"+ user_id+ "','"+ email_address+ "','"+ phonenumber+ "','"+ password0+ "')")
+        cur1.execute("insert into register_list(user_id,email_address,password,first_name,last_name,age,phonenumber,adhar_id,nationality,tc)values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",values_1)
+        cur1.execute("insert into login_checklist(user_id,email_adress,phonenumber,password)values(%s,%s,%s,%s)",values_2)
         print("\n\tsuccesfully registered !\n")
         print("\n\tyour user id is :",user_id)
         print("\tplease remember your user_id and password")
@@ -149,6 +176,7 @@ def user_registeration2(x,y):
         log("user entred wrong email,phonenumber etc")
     con1.commit()
 # block end
+
 
 # fuction block for staff registeration1
 def staff_registeration1():
@@ -348,6 +376,7 @@ def book_ticket(option_given,user_id,booking_type="booking"):
             if ticket_id==None:
                 cur1.execute("insert into ticket_history(ship_name,user_id,ticket_id,ticket_validity)values('"+ship_name+"',"+user_id+",1,'valid')")
                 cur1.execute("update "+ship_name+" set user_id="+user_id+",ticket_id=1,ticket_validity='valid',allocation='allocated' where seat_no="+seat_no)
+                con1.commit()
             else:
                 ticket_id=str(ticket_id+1)
                 cur1.execute("insert into ticket_history(ship_name,user_id,ticket_id,ticket_validity)values('"+ship_name+"',"+user_id+","+ticket_id+",'valid')")
@@ -540,7 +569,7 @@ def see_tickets_for_user(user_id):
         cur1.execute("select * from ticket_history where user_id="+user_id+" and ticket_validity='deactivated'")
         deactivated_tickets=cur1.fetchall()
         tableconv(deactivated_tickets,table_name="ticket_history",escape_sequences="\t\t\b\b")
-    if opt==3:
+    if opt==4:
         print("\n\t\t\b\bexiting...")
         return
     else:
@@ -736,22 +765,34 @@ def log(log_input,escape_sequences="",error=False):
     if error==True:
         l=open("error_log.txt","a") #if it was a error which was not intented for user will be logged in error_log.txt
     else:
-        l=open("log.txt","a") #if it was a normal log it will be logged here
+        l=open("log.txt","a") #if it was a normal log it will be logged here but still wont be showed to user
     l.write(escape_sequences+"["+timestamp+"] "+log_input+"\n")
     l.close()
 if module_error_flag==True: #logs import errors if any 
     log(module_error,error=True)
 # block end 
 
+# Function blocks end here 
+
+
+
+
+
+
+
+
+
+
+
 # actual command line interface code
 
-first_run()
+first_run() # Routes you back to the intialization run of the program in theroy this function runs first 
 
 #main menu
 print("\n")
 print("               __-------___")
 print("             _(            )__----- _")
-print("            (  --Developed by        )")
+print("            (  --Developed by        )")             # just an ASCII art for looks
 print("             (___  Milan Tom Suresh   )_")
 print("                 (___ Abhiram Dinesh    )")
 print("                     (__                ) ")
@@ -762,14 +803,16 @@ print("                             ( )  ()( ) ( )\t\t|                         
 print("                             __    __    __\t\t#-----------------------------------------------#")
 print("                            |==|  |==|  |==|")
 print("                          __|__|__|__|__|__|__")
-print("                        __|___________________|___")
+print("                        __|___________________|___")     # I copied that table from my own tableconv funtion
 print("                     __|__[]__[]__[]__[]__[]__[]__|___")
 print("                    |............................o.../")
 print(r"""                    \.............................../""")
 print("               hjw_,~')_,~')_,~')_,~')_,~')_,~')_,~')/,~')_")
 
-while con1.is_connected() == True:
-    log("user entered the main program")
+
+
+while con1.is_connected() == True:   # This puts program into loop untill user quits
+    log("user entered the main program")   
     print("\n\nPlease log in or register ( chose options 1, 2, 3 ) :")
     tableconv(["","1.log in","2.register ( If you don't have an account already )","3.exit program",""],escape_sequences="\n",list_only=True)
     try:
@@ -778,10 +821,11 @@ while con1.is_connected() == True:
             print("### please choose appropriate option ###".upper())
 #end of main menu
 
+
         #login menu 
         while opt=="1":
             log("user entred login menu")
-            tableconv(["","1.login","2.staff login","3.go back to main menu",""],escape_sequences="\n\t",list_only=True)
+            tableconv(["","1.login","2 login","3.go back to main menu",""],escape_sequences="\n\t",list_only=True)
             opt4=input("\n\tPlease enter 1, 2, 3 : ") #opt4 will be used for login menu
             if opt4=="1":
                 log("user choosed normal login")
@@ -800,7 +844,7 @@ while con1.is_connected() == True:
             #end of login menu
 
 
-            #customer menu 
+            #customer menu
             while login_check[0]==1:
                 print("\n\t1.Book tickets")
                 print("\t2.See tickets")
