@@ -143,13 +143,12 @@ def user_registeration1():
 # This block is only entred if the passwords in first block matched 
 # That is because it depends on the flag varible in user_registeration2() refer to the fucntion for more info
 def user_registeration2(password,email_address):
-    user_id = 0
-    cur1.execute("select max(user_id) from register_list")
-    c = cur1.fetchall()
+    cur1.execute("select max(user_id) from register_list")  #selects the biggest user od or the last registered user id from table 
+    c = cur1.fetchall() # just stores the alst regisered user id 
     if c[0][0]==None:
-        user_id="0"
+        user_id = 0 # if no user id was found meaning the database was just created it sets default to 0
     else:
-        user_id = str(c[0][0] + 1)
+        user_id = c[0][0] + 1
     first_name = input("\t\t\b\bPlease enter your first name : ")
     last_name = input("\t\t\b\bPlease enter your last name : ")
     age = input("\t\t\b\bPlease enter your age : ")
@@ -607,6 +606,21 @@ def book_food(user_id):
         print("\n\t\t\b\bPlease complete the payment at counter !")
 #block end
 
+#function block for checking of emails and passwords as such since i dont wanna repeat it nor huge pain reading stuff
+def validity_check(type):
+    if type == "email_address":
+        pass
+    elif type == "password":
+        pass
+    elif type == "phonenumber":
+        pass
+    elif type == "adhar_id":
+        pass
+    elif type == "name":
+        pass
+    elif type == "age":
+        pass
+
 #fucntion block for custom table
 def tableconv(input_list,table_name="NA",escape_sequences="",custom_corner="o",table_headers="NA",list_only=False,full_lined=False,numbered=False,bulleted="NA"):
 
@@ -839,7 +853,7 @@ while con1.is_connected() == True:   # This puts program into loop untill user q
             if opt4 not in ["1","2","3"]:
                 login_check=[None]
                 print("\n\t#### Error : Please enter appropriate values above ####".upper())
-            if login_check==0: #login check see if user is logged in since if it is zero the loop will break
+login_check==0: #login check see if user is logged in since if it is zero the loop will break
                 break          #and user will end up in main menu 
             #end of login menu
 
