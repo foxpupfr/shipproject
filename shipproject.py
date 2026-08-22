@@ -124,20 +124,19 @@ def first_run():
 def user_registeration1():
     email_address = input("\n\t\t\b\bPlease enter you email : ") # Takes in all the basic user values for registeration
     print("\n\t\t\b\b### please remember your password ###\n".upper()) 
-    password0 = input("\t\t\b\bPlease enter a secure password : ")
-    password1 = input("\t\t\b\bPlease reconfirm your password : ")
+    password = input("\t\t\b\bPlease enter a secure password : ")
+    password0 = input("\t\t\b\bPlease reconfirm your password : ")
     flag = 0
-    if password0 != password1: # Checks if both entered passwords are not same, condition is True it makes the flag = 1 
+    if password != password0: # Checks if both entered passwords are not same, condition is True it makes the flag = 1 
         flag = 1               # flag = 1 here indicates passwords didn't match
         print("\n\n\t\tBoth passwords are not the same !!!\n")
         log("user didn't type matching passwords")
         print("\t\tredirecting you to menu again !")
     else:                      # If the passwords were same, above condition was deemed False it makes flag = 0
         flag = 0               # flag = 0 here means passwords did match
-    return flag,password0,email_address   
+    return flag,password,email_address   
 # Here it returns the above entered info and also the flag to the place function was called from 
 # block end
-
 
 # fuction block for user registeration (part 2)
 # This block is only entred if the passwords in first block matched 
@@ -606,20 +605,49 @@ def book_food(user_id):
         print("\n\t\t\b\bPlease complete the payment at counter !")
 #block end
 
-#function block for checking of emails and passwords as such since i dont wanna repeat it nor huge pain reading stuff
-def validity_check(type):
-    if type == "email_address":
-        pass
-    elif type == "password":
-        pass
-    elif type == "phonenumber":
-        pass
-    elif type == "adhar_id":
-        pass
-    elif type == "name":
-        pass
-    elif type == "age":
-        pass
+#function block for checking of emails and passwords as such since i dont wanna repeat it nor huge pain reading stuff 
+def valid_data_catching(typelist,usecase):
+    for type in typelist:
+        if type == "email_adress":
+        # use of alphabets, numbers , ".", and a single @ symbol is allowed generally in emails
+            flag = 0
+            at_flag = 0
+            for s in range(3):
+                email = input("Please enter a valid email address : ")
+                for i in range(len(email)):
+                #checking of email for following basic validity 
+                    if email[i].isalnum() != True and email[i]  not in ".@":    #checks if the charecter is alpha-numeric 
+                        flag -= 1  #if its not it check if is "." or "@" symbol if not it reduces from flag
+                    if i+1 == len(email):
+                        pass
+                    elif True:
+                        pass
+                    elif "." == email[i] and "." == email[i+1]:
+                        print("You can't use \".\"continusly ")
+                    elif "." == email[i] and "@" == email[i+1]:
+                        print(". cannot be used before @ symbol")
+                    if email[i] == "@":     #flags how many times @ symbol was used 
+                        at_flag += 1        #according to rules it can only be used once 
+
+                # chekcing of domain for validity 
+                if at_flag == 1 and flag1 == 0:
+                    domain_check = email.split("@")[1]  #this leaves me with a string that looks like "gmail.com"
+                    
+                
+
+        elif type == "password":
+            pass
+        elif type == "name":
+            pass 
+        elif type == "phonenumber":
+            pass
+        elif type == "adhar_id":
+            pass
+        elif type == "age":
+            pass
+        elif type == "tc":
+            pass
+#block end 
 
 #fucntion block for custom table
 def tableconv(input_list,table_name="NA",escape_sequences="",custom_corner="o",table_headers="NA",list_only=False,full_lined=False,numbered=False,bulleted="NA"):
@@ -853,7 +881,7 @@ while con1.is_connected() == True:   # This puts program into loop untill user q
             if opt4 not in ["1","2","3"]:
                 login_check=[None]
                 print("\n\t#### Error : Please enter appropriate values above ####".upper())
-login_check==0: #login check see if user is logged in since if it is zero the loop will break
+            if login_check==0: #login check see if user is logged in since if it is zero the loop will break
                 break          #and user will end up in main menu 
             #end of login menu
 
