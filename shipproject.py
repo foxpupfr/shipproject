@@ -607,32 +607,35 @@ def book_food(user_id):
 
 #function block for checking of emails and passwords as such since i dont wanna repeat it nor huge pain reading stuff 
 def valid_data_catching(typelist,usecase):
-    for type in typelist:
-        if type == "email_adress":
+
+    #a list containing values to return get passed or so called a typelist by me 
+    for type in typelist:       #we itrate through the typelist to featch all the values neccesary
+        
+        #this allows me to fetch an email address that is valid and accurate
+        if type == "email_address":
         # use of alphabets, numbers , ".", and a single @ symbol is allowed generally in emails
-            flag = 0
-            at_flag = 0
+            at_flag = 0     #flag for catching occurances of "@"
             for s in range(3):
-                email = input("Please enter a valid email address : ")
-                for i in range(len(email)):
+                email = input("Please enter a valid email address : ")      #we read the email address from the terminal
+                for i in range(len(email)):     #we itrate through each of the charechters in email address
                 #checking of email for following basic validity 
                     if email[i].isalnum() != True and email[i]  not in ".@":    #checks if the charecter is alpha-numeric 
-                        flag -= 1  #if its not it check if is "." or "@" symbol if not it reduces from flag
-                    if i+1 == len(email):
-                        pass
-                    elif True:
-                        pass
+                        print("You can't use symbols other than \"@\" or \".\" in an email address")
+                    if i+1 == len(email):   #this just makes so that no error occurs when strring reaches its end
+                        if email[i] == ".": #also it keeps check of this rule along with it 
+                            print("You can't use \".\" in the end of an email address")
                     elif "." == email[i] and "." == email[i+1]:
-                        print("You can't use \".\"continusly ")
+                        print("You can't use \".\"continusly in an email address")     # self explanatory
                     elif "." == email[i] and "@" == email[i+1]:
-                        print(". cannot be used before @ symbol")
+                        print("You cannot use \".\" before \"@\" symbol in an email address")   #self explanatory
                     if email[i] == "@":     #flags how many times @ symbol was used 
                         at_flag += 1        #according to rules it can only be used once 
 
                 # chekcing of domain for validity 
-                if at_flag == 1 and flag == 0:
+                if at_flag == 1:       #this would mean "@" symbol was only used once in the email address passed 
                     domain_check = email.split("@")[1]  #this leaves me with a string that looks like "gmail.com"
-                    
+                else:
+                    print("You can use \"@\" only once in an email address")        #self explanatory
                 
 
         elif type == "password":
