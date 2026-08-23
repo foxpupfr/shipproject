@@ -630,7 +630,7 @@ def valid_data_catching(typelist,usecase):
                         at_flag += 1        #according to rules it can only be used once 
 
                 # chekcing of domain for validity 
-                if at_flag == 1 and flag1 == 0:
+                if at_flag == 1 and flag == 0:
                     domain_check = email.split("@")[1]  #this leaves me with a string that looks like "gmail.com"
                     
                 
