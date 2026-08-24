@@ -611,31 +611,46 @@ def valid_data_catching(typelist,usecase):
     #a list containing values to return get passed or so called a typelist by me 
     for type in typelist:       #we itrate through the typelist to featch all the values neccesary
         
-        #this allows me to fetch an email address that is valid and accurate
         if type == "email_address":
-        # use of alphabets, numbers , ".", and a single @ symbol is allowed generally in emails
-            at_flag = 0     #flag for catching occurances of "@"
             for s in range(3):
-                email = input("Please enter a valid email address : ")      #we read the email address from the terminal
-                for i in range(len(email)):     #we itrate through each of the charechters in email address
-                #checking of email for following basic validity 
-                    if email[i].isalnum() != True and email[i]  not in ".@":    #checks if the charecter is alpha-numeric 
-                        print("You can't use symbols other than \"@\" or \".\" in an email address")
-                    if i+1 == len(email):   #this just makes so that no error occurs when strring reaches its end
-                        if email[i] == ".": #also it keeps check of this rule along with it 
-                            print("You can't use \".\" in the end of an email address")
-                    elif "." == email[i] and "." == email[i+1]:
-                        print("You can't use \".\"continusly in an email address")     # self explanatory
-                    elif "." == email[i] and "@" == email[i+1]:
-                        print("You cannot use \".\" before \"@\" symbol in an email address")   #self explanatory
-                    if email[i] == "@":     #flags how many times @ symbol was used 
-                        at_flag += 1        #according to rules it can only be used once 
 
-                # chekcing of domain for validity 
-                if at_flag == 1:       #this would mean "@" symbol was only used once in the email address passed 
-                    domain_check = email.split("@")[1]  #this leaves me with a string that looks like "gmail.com"
+                email = input("Please enter a valid email address : ")
+                error_flag = 0
+
+                if len(email) > 320:        #global checking for errors
+                    tableconv("An email cannot have more than 320 charecters",warning_box = True)
+                    error_flag = 1
+                if " " in email:
+                    tableconv("An email cannot contain whitespaces", warning_box = True)
+                    error_flag = 1
+                if email.count("@") > 1:
+                    tableconv("You can only use \"@\" once in an email address",warning_box = True)
+                    error_flag = 1
                 else:
-                    print("You can use \"@\" only once in an email address")        #self explanatory
+                    tableconv("An email must contain one \"@\" symbol",warning_box = True)
+                    error_flag = 1 
+
+                if error_flag == 0:      #splitting of local part and domain for seprate validy chekcing
+                    local_part,domain = email.split("@")    #splitting only happens if its free from global errors
+                    
+                    special_chars = "._-+"
+                    if len(local_part) > 64:    #local part checking starts
+                        tableconv("part before \"@\" must be less than or equal to 64 charecters",warning_box = True)
+                    elif len(local_part) < 1:
+                        tableconv("Part before \"@\" must be less than or equal to 1 charecter",warning_box= True)
+                    if local_part[0].isalnum() and local_part[len(local_part) - 1].isalnum():
+                        pass
+                    else:
+                        tableconv("Part before \"@\" must start and end with alpha-numeric charecters",warning_box = True)
+                    for i in range(len(local_part)):
+                        if i + 1 == len(local_part):
+                            pass
+                        elif local_part[i] in special_chars and local_part[i + 1] in special_chars:
+                            tableconv("\".\" ,\"_\" ,\"-\" ,\"+\" cannot be used consiqutively",warning_box = True)
+
+
+                
+
                 
 
         elif type == "password":
@@ -653,9 +668,58 @@ def valid_data_catching(typelist,usecase):
 #block end 
 
 #fucntion block for custom table
-def tableconv(input_list,table_name="NA",escape_sequences="",custom_corner="o",table_headers="NA",list_only=False,full_lined=False,numbered=False,bulleted="NA"):
+"""
+This is indended as a custom function which can draw tables for this program and the tables drawn will change according to the arguments passed 
 
-    #prints the table lines for [()]
+-- a input_list is passed first which can be nested list or not nested
+-- passing a table name as argument will draw headers with the feilds of the table if its valid in database shipproject
+-- passing valid escape_sequences will allow table to follow escape Sequences
+-- passing a valid charecter to custom_corner will draw table with that corner
+-- passing valid string into table_headers will draw table with it as a head while list_only is true
+-- if list only is true it will draw single column table (nested list is not allowed here)
+-- enabling full_lined will draw tables with lines in between after the headers
+-- enabling numbered will draw numbered single column tables
+-- enabling bulleted by giving it a valid charecter to use as bullets wull draw bulleted single column tables
+-- enabling warning box draws a box with "!" containing the content passed into input_string indicating warning 
+-- enabling error_box draws a box with "#" containing the content passed into input_string indicating a error
+"""
+def tableconv(input_data,table_name = "NA",escape_sequences = "\n",custom_corner = "o",table_headers = "NA",list_only = False,full_lined = False,numbered = False,bulleted = "NA",warning_box = False, error_box = False,menu = False):
+    
+    input_string = "NA"     #this is would mean you can pass data without worrying about list or strings 
+    if type(input_data) is str:
+        input_string = input_data
+    elif type(input_data) is list:
+        input_list = input_data
+
+    #this will take advantage of single column table drawing part if the function and line2
+    if input_string != "NA":
+        list_only = True
+        if menu == True:
+            input_list = input_string.split(",")
+            input_list.insert(0," ")
+            input_list.append(" ")
+            box_char = "|"
+            box_char2 = "-"
+        elif warning_box == True: 
+            input_list = [input_string,]
+            input_list.insert(0," ")
+            input_list.append(" ")
+            box_char = "!"
+            box_char2 = "!"
+            custom_corner = "!"
+        elif error_box == True:
+            input_list = [input_string,]
+            input_list.insert(0," ")
+            input_list.append(" ")
+            box_char = "#"
+            box_char2 = "#"
+            custom_corner = "#"
+    else:
+        box_char = "|"
+        box_char2 = "-"
+
+
+    #prints the table lines for [()]    (rows and columns)
     def line1():
         print(escape_sequences+custom_corner+"-",end="")
         for column in range(0,column_no):
@@ -665,19 +729,19 @@ def tableconv(input_list,table_name="NA",escape_sequences="",custom_corner="o",t
                 break
             print("-"+custom_corner+"-",end="")
 
-    #prints the table lines for []
+    #prints the table lines for []  (single column)
     def line2():
-        print(escape_sequences+custom_corner+"-",end="")
-        print("-"*lengthiest_data,end="")
-        print("-"+custom_corner)
+        print(escape_sequences + custom_corner + box_char2,end="")
+        print(box_char2 * lengthiest_data,end="")
+        print(box_char2 + custom_corner)
 
-    #calculates the padding and prints it along for [()]
+    #calculates the padding and prints it along for [()] (rows and columns)
     def calc_padding1(row,column,content):
         padding_length=lengthiest_data_list[column]-len(str(input_list[row][column]))    
         content+=" "*padding_length
         return content
 
-    #calculates the padding and prints it along for []
+    #calculates the padding and prints it along for [] (single column)
     def calc_padding2(index,content):
         padding_length=lengthiest_data-len(str(input_list[index]))
         padding=" "*padding_length
@@ -692,59 +756,59 @@ def tableconv(input_list,table_name="NA",escape_sequences="",custom_corner="o",t
             input_list.insert(0,table_headers)
 
         #for numbered single column tables
-        if numbered==True:
-            if table_headers=="NA":
+        if numbered == True:
+            if table_headers == "NA":   #makes an exception for numbering if headers are given
                 for index in range(0,len(input_list)):
-                    number=str(index+1)+"."
-                    input_list[index]=number+input_list[index]
+                    number = str(index+1) + "."
+                    input_list[index] = number + input_list[index]
             else:
                 for index in range(1,len(input_list)):
-                    number=str(index)+"."
-                    input_list[index]=number+input_list[index]
+                    number=str(index) + "."
+                    input_list[index] = number + input_list[index]
 
         #for bulleted single column tables
-        if bulleted!="NA":
+        if bulleted != "NA":
             for index in range(1,len(input_list)):
-                input_list[index]=bulleted+" "+input_list[index]
+                input_list[index] = bulleted + " " + input_list[index]
 
         #sets number of columns 
         index_count=len(input_list)
 
         #creates a variable named lengthiest_data containing the largest data length in the whole list
-        lengthiest_data=0
+        lengthiest_data=0   #common for both variants of tables
         for index in range(0,index_count):
             if len(input_list[index]) > lengthiest_data:
                 lengthiest_data=len(input_list[index])
 
-        #prints the acutual single columed table
+        #prints the single columed table variant
         line2()
         escape_sequences=escape_sequences.replace("\n","")
         for index in range(0,index_count):
             if index==0 and table_headers!="NA":
-                content=escape_sequences+"| "+input_list[index]
+                content=escape_sequences + box_char + " " + input_list[index]
                 content=calc_padding2(index,content)
-                content+=" |"
+                content += " " + box_char
                 print(content)
                 line2()
             else:
-                content=escape_sequences+"| "+input_list[index]
-                content=calc_padding2(index,content)
-                content+=" |"
+                content = escape_sequences + box_char + " " + input_list[index]
+                content = calc_padding2(index,content)
+                content+=" " + box_char
                 print(content)
-                if full_lined==True:
+                if full_lined==True:    #activates if full_lined is enabled
                     line2()
         if full_lined==False:
             line2()
 
-
+    #prints the table variant with rows and columns
     if list_only==False:
         #sets number of rows and number of columns
         row_no=len(input_list) 
         column_no=len(input_list[0])
 
-        #inserts table headers if specified
+        #inserts table headers if table name given
         if table_name!="NA":
-            table_headers=[]
+            table_headers=[]    
             cur1.execute("desc "+table_name)
             table_desc=cur1.fetchall()
             for desc_row in range(0,len(table_desc)):
@@ -769,7 +833,7 @@ def tableconv(input_list,table_name="NA",escape_sequences="",custom_corner="o",t
         line1()
         escape_sequences=escape_sequences.replace("\n","")
         for row in range(0,row_no):
-            full_content=""
+            full_content=""     #this is done so that no error occurs in idle since all data is stored in ram before printing
             for column in range(0,column_no):
                 if column==0:
                     content=escape_sequences+"| "
@@ -800,7 +864,7 @@ def tableconv(input_list,table_name="NA",escape_sequences="",custom_corner="o",t
                 content=calc_padding1(row,column,content)
                 content+=" | "
                 full_content+=content
-        if full_lined==False:
+        if full_lined==False: #activates if full_lined is enabled
             line1()
 #block end
 
@@ -859,7 +923,7 @@ print("               hjw_,~')_,~')_,~')_,~')_,~')_,~')_,~')/,~')_")
 while con1.is_connected() == True:   # This puts program into loop untill user quits
     log("user entered the main program")   
     print("\n\nPlease log in or register ( chose options 1, 2, 3 ) :")
-    tableconv(["","1.log in","2.register ( If you don't have an account already )","3.exit program",""],escape_sequences="\n",list_only=True)
+    tableconv("1.log in,2.register ( If you don't have an account already ),3.exit program",menu = True)
     try:
         opt=input("\nPlease enter 1, 2, 3 : ") #opt will be used for main menu options
         if opt not in ["1","2","3"]:
@@ -870,7 +934,7 @@ while con1.is_connected() == True:   # This puts program into loop untill user q
         #login menu 
         while opt=="1":
             log("user entred login menu")
-            tableconv(["","1.login","2 login","3.go back to main menu",""],escape_sequences="\n\t",list_only=True)
+            tableconv("1.login,2 login,3.go back to main menu",escape_sequences = "\n\t",menu = True)
             opt4=input("\n\tPlease enter 1, 2, 3 : ") #opt4 will be used for login menu
             if opt4=="1":
                 log("user choosed normal login")
