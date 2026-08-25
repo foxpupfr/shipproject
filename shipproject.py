@@ -612,8 +612,59 @@ def valid_data_catching(typelist,usecase):
     for type in typelist:       #we itrate through the typelist to featch all the values neccesary
         
         if type == "email_address":
-            for s in range(3):
+            
+            def email_local_part_validation():      #validation of the local part 
+                special_chars = "._-+"      #speical chars which are allowed in email address
+                if len(local_part) > 64:    #local part checking starts
+                    tableconv("part before \"@\" must be less than or equal to 64 charecters",warning_box = True)
+                    pass
+                elif len(local_part) < 1:
+                    tableconv("Part before \"@\" must be less than or equal to 1 charecter",warning_box= True)
+                    pass
+                if local_part[0].isalnum() == False or local_part[len(local_part) - 1].isalnum() == False:
+                    tableconv("Part before \"@\" must start and end with alpha-numeric charecters",warning_box = True)
+                error_flag0 = 0
+                error_flag1 = 0
+                for i in range(len(local_part)):
+                    if i == len(local_part) - 1:
+                        pass
+                    elif local_part[i] in special_chars and local_part[i + 1] in special_chars and error_flag0 == 0:
+                        tableconv("\".\" ,\"_\" ,\"-\" ,\"+\" cannot be used consiqutively",warning_box = True)
+                        error_flag0 = 1
+                    if local_part[i] not in special_chars and local_part[i].isalnum() == False and error_flag1 == 0:
+                        tableconv("Charecters other than \".\" ,\"_\" ,\"-\" ,\"+\" cannot be used in email",warning_box = True)
+                        error_flag1 = 1
 
+            def email_domain_validation():  #validation of domain
+                special_chars = ".-"
+                if domain.count(".") < 1:
+                    tableconv("A domain must contain at least one \".\"",warning_box = True)
+                if len(domain) < 4 or if len(domain) > 255:
+                    tableconv("A domain should be between 4 and 255 charecters long",error_box = True)
+                if domain[0].isalnum() == False or domain[len(domain) - 1].isalnum() == False:
+                    tableconv("A domain cannot start or end with special charecters",warning_box = True)
+                error_flag0 = 0
+                error_flag1 = 0
+                for i in range(len(domain)):
+                    if i == len(domain) - 1:
+                        pass
+                    elif domain[i] + domain[i + 1] in ["..",".-","-."] and error_flag0 == 0:
+                        tableconv("A domain cannot have \".\", \"-\" used consiqutivel",warning_box = True)
+                        error_flag0 = 1
+                    if domain[i] not in special_chars and domain[i].isalnum() == False and error_flag1 == 0:
+                        tableconv("A domain cannot have special charecters other than \".\", \"-\"",warning_box = True)
+                        error_flag1 = 1
+                    label_list = domain..split(".")
+                    for label in range(len(label_list)):
+                        if label == len(label_list) - 1:
+                            if len(label_list[label]) < 2 or len(label_list[label]) > 63:
+                                tableconv("The final label in a domain should be between 2 and 63 charcters long",warning_box = True)
+                            if label_list[label].isalnum() == False:
+                                tableconv("The final label in a domain should only contain alphabets",warning_box = True)
+                        elif len(label_list[label]) < 1 or len(label_list[label]) > 63:
+                            tableconv("The labels should between 1 and 64 charecters long",warning_box = True)
+
+            for s in range(3):
                 email = input("Please enter a valid email address : ")
                 error_flag = 0
 
@@ -623,34 +674,22 @@ def valid_data_catching(typelist,usecase):
                 if " " in email:
                     tableconv("An email cannot contain whitespaces", warning_box = True)
                     error_flag = 1
-                if email.count("@") > 1:
-                    tableconv("You can only use \"@\" once in an email address",warning_box = True)
-                    error_flag = 1
-                else:
-                    tableconv("An email must contain one \"@\" symbol",warning_box = True)
+                if email.count("@") != 1:
+                    tableconv("An email must contain one \"@\" symbol, not more not less",warning_box = True)
                     error_flag = 1 
 
                 if error_flag == 0:      #splitting of local part and domain for seprate validy chekcing
                     local_part,domain = email.split("@")    #splitting only happens if its free from global errors
                     
-                    special_chars = "._-+"
-                    if len(local_part) > 64:    #local part checking starts
-                        tableconv("part before \"@\" must be less than or equal to 64 charecters",warning_box = True)
-                    elif len(local_part) < 1:
-                        tableconv("Part before \"@\" must be less than or equal to 1 charecter",warning_box= True)
-                    if local_part[0].isalnum() and local_part[len(local_part) - 1].isalnum():
-                        pass
-                    else:
-                        tableconv("Part before \"@\" must start and end with alpha-numeric charecters",warning_box = True)
-                    for i in range(len(local_part)):
-                        if i + 1 == len(local_part):
-                            pass
-                        elif local_part[i] in special_chars and local_part[i + 1] in special_chars:
-                            tableconv("\".\" ,\"_\" ,\"-\" ,\"+\" cannot be used consiqutively",warning_box = True)
-
-
-                
-
+                    if local_part == "" or domain == "":        #if any of parts are missing
+                        tableconv("There should be a part before and after the \"@\" symbol",warning_box =True)
+                    else:   #if parts are not missing it enters else block
+                        if email_local_part_validation() == None or email_domain_validation() == None:
+                            return None
+                        else:
+                            return email_local_part_validation() + "@" + email_domain_validation()
+                        
+               
                 
 
         elif type == "password":
